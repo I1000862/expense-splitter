@@ -1,6 +1,5 @@
 package com.example.expensesplitter.dto.response.group;
 
-import com.example.expensesplitter.enums.Currency;
 import com.example.expensesplitter.enums.GroupStatus;
 import com.example.expensesplitter.enums.GroupType;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,8 @@ public class GroupResponseDto {
     private String inviteUrl;
     private String photoUrl;
     private GroupStatus status;
-    private Currency currency;
+    private String currencyCode;
+    private String currencySymbol;
     private GroupType type;
     private LocalDateTime createdAt;
 }

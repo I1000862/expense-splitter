@@ -62,7 +62,8 @@ public class GroupServiceImpl implements GroupService {
                 .inviteUrl(group.getInviteUrl())
                 .photoUrl(group.getPhotoUrl())
                 .status(group.getStatus())
-                .currency(group.getCurrency())
+                .currencyCode(group.getCurrency().getCode())
+                .currencySymbol(group.getCurrency().getSymbol())
                 .type(group.getType())
                 .createdAt(group.getCreatedAt())
                 .build();
