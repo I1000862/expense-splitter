@@ -1,0 +1,67 @@
+package com.example.expensesplitter.controller;
+
+import com.example.expensesplitter.dto.request.UserRequestDto;
+import com.example.expensesplitter.dto.response.SuccessResponseDto;
+import com.example.expensesplitter.dto.response.UserResponseDto;
+
+import com.example.expensesplitter.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.CacheResponse;
+import java.util.List;
+import java.util.UUID;
+
+//this wil be removed later
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public ResponseEntity<SuccessResponseDto> getAllUsers() {
+        List<UserResponseDto> users = userService.getAllUsers();
+        SuccessResponseDto<List<UserResponseDto>> res = SuccessResponseDto.<List<UserResponseDto>>builder()
+                .message("Users retrieved successfully.")
+                .data(users)
+                .build();
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SuccessResponseDto> getUserById(@PathVariable UUID id) {
+            UserResponseDto user = userService.getUserById(id);
+            return ResponseEntity.ok(SuccessResponseDto.<UserResponseDto>builder()
+                    .message("user retrieved successfully.")
+                    .data(user)
+                    .build()
+            );
+    }
+
+    @PostMapping
+    public ResponseEntity<SuccessResponseDto> createUser(@RequestBody UserRequestDto requestDto) {
+        UserResponseDto user = userService.createUser(requestDto);
+
+    SuccessResponseDto  res = SuccessResponseDto.<UserResponseDto>builder()
+                .message("User created.")
+                .data(user)
+                .build();
+     return new ResponseEntity(res, HttpStatus.CREATED);
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SuccessResponseDto> updateUser(@PathVariable UUID id,
+                                                      @RequestBody UserRequestDto requestDto) {
+        UserResponseDto user = userService.updateUser(id, requestDto);
+        return ResponseEntity.ok(SuccessResponseDto.<UserResponseDto>builder()
+                .message("user updated.")
+                .data(user)
+                .build());
+    }
+}
