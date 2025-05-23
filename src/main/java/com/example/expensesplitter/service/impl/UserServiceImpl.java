@@ -1,9 +1,8 @@
 package com.example.expensesplitter.service.impl;
 
 import com.example.expensesplitter.dto.request.UserRequestDto;
-import com.example.expensesplitter.dto.response.UserResponseDto;
+import com.example.expensesplitter.dto.response.user.UserResponseDto;
 import com.example.expensesplitter.entity.User;
-import com.example.expensesplitter.exception.ResourceNotFoundException;
 import com.example.expensesplitter.repository.UserRepository;
 import com.example.expensesplitter.service.UserService;
 import org.springframework.stereotype.Service;
@@ -23,30 +22,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDto> getAllUsers() {
         return userRepository.findAll()
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+                             .stream()
+                             .map(this::convertToDto)
+                             .collect(Collectors.toList());
     }
 
     @Override
     public UserResponseDto getUserById(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                                  .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         return convertToDto(user);
-    }
-
-    @Override
-    public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        User user = new User();
-        user.setUsername(userRequestDto.getUsername());
-        user.setEmail(userRequestDto.getEmail());
-        return convertToDto(userRepository.save(user));
     }
 
     @Override
     public UserResponseDto updateUser(UUID id, UserRequestDto userRequestDto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                                  .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         user.setUsername(userRequestDto.getUsername());
         user.setEmail(userRequestDto.getEmail());
         return convertToDto(userRepository.save(user));
@@ -54,9 +45,9 @@ public class UserServiceImpl implements UserService {
 
     private UserResponseDto convertToDto(User user) {
         return UserResponseDto.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .profilePictureUrl(user.getProfilePictureUrl())
-                .build();
+                              .username(user.getUsername())
+                              .email(user.getEmail())
+                              .profilePictureUrl(user.getProfilePictureUrl())
+                              .build();
     }
 }
