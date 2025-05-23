@@ -48,6 +48,12 @@ public class GlobalExceptionHandler {
                              .body(new ErrorResponseDto("BadRequest", "Required request body is missing."));
     }
 
+    @ExceptionHandler(EmailAlreadyInUseException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgument(EmailAlreadyInUseException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(new ErrorResponseDto("DuplicateEmail", e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGenericException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
