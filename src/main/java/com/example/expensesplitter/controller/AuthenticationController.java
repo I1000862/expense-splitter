@@ -41,11 +41,14 @@ public class AuthenticationController {
     public ResponseEntity<SuccessResponseDto> login(@Valid @RequestBody LoginUserDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
-        String jwtToken = jwtService.generateToken(authenticatedUser);
+        String accessToken = jwtService.generateToken(authenticatedUser, false);
+        String refreshToken = jwtService.generateToken(authenticatedUser, true);
 
         LoginResponseDto loginResponse = LoginResponseDto.builder()
-                                                         .accessToken(jwtToken)
-                                                         .expiresIn(jwtService.getExpirationTime())
+                                                         .accessToken(accessToken)
+                                                         .refreshToken(refreshToken)
+                                                         .expiresIn(jwtService.getExpirationTime(false))
+                                                         .refreshExpiresIn(jwtService.getExpirationTime(true))
                                                          .build();
 
         return ResponseEntity.ok(SuccessResponseDto.<LoginResponseDto>builder()

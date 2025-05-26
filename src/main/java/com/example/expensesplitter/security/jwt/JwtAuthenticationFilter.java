@@ -47,6 +47,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             final String jwt = authHeader.substring(7);
+
+            String tokenType = jwtService.extractClaim(jwt, claims -> claims.get("token_type", String.class));
+
+            if (!"access".equals(tokenType)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             final String userEmail = jwtService.extractUsername(jwt);
 
             Authentication authentication = SecurityContextHolder.getContext()
