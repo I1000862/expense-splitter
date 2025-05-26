@@ -3,9 +3,12 @@ package com.example.expensesplitter.exception;
 import com.example.expensesplitter.dto.response.ErrorResponseDto;
 import com.example.expensesplitter.dto.response.ValidationErrorDetail;
 import com.example.expensesplitter.dto.response.ValidationErrorResponseDto;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -52,6 +55,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleIllegalArgument(EmailAlreadyInUseException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(new ErrorResponseDto("DuplicateEmail", e.getMessage()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponseDto> handleBadCredentials(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("BadCredentials", "Username or password is incorrect."));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponseDto> handleExpiredJwtException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", "Token has expired."));
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponseDto> handleJwtSignatureException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
