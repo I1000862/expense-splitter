@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -71,6 +72,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<ErrorResponseDto> handleJwtSignatureException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponseDto> handleAuthenticationException(Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                              .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
     }

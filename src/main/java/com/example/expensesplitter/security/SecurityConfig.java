@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -14,13 +15,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
-    
+
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            AuthenticationProvider authenticationProvider
+            AuthenticationProvider authenticationProvider,
+            AuthenticationEntryPoint jwtAuthenticationEntryPoint
                          ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.authenticationProvider = authenticationProvider;
+        this.authenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
 
@@ -32,6 +37,7 @@ public class SecurityConfig {
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
+            .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
