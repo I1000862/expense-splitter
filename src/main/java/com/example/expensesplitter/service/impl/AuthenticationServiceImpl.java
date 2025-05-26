@@ -1,11 +1,15 @@
 package com.example.expensesplitter.service.impl;
 
+import com.example.expensesplitter.dto.request.auth.LoginUserDto;
 import com.example.expensesplitter.dto.request.auth.RegisterUserDto;
 import com.example.expensesplitter.dto.response.user.UserResponseDto;
 import com.example.expensesplitter.entity.User;
 import com.example.expensesplitter.exception.EmailAlreadyInUseException;
+import com.example.expensesplitter.exception.ResourceNotFoundException;
 import com.example.expensesplitter.repository.UserRepository;
 import com.example.expensesplitter.service.AuthenticationService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +18,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final AuthenticationManager authenticationManager;
+
+    public AuthenticationServiceImpl(
+            UserRepository userRepository, PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager
+                                    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -37,6 +47,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                               .username(registeredUser.getUsername())
                               .profilePictureUrl(registeredUser.getProfilePictureUrl())
                               .build();
+    }
+
+    @Override
+    public User authenticate(LoginUserDto loginUserDto) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginUserDto.getEmail(), loginUserDto.getPassword()
+                ));
+        
+        return userRepository.findByEmail(loginUserDto.getEmail())
+                             .orElseThrow(() -> new ResourceNotFoundException("No user with this email"));
     }
 
 }
