@@ -1,4 +1,4 @@
-package com.example.expensesplitter.dto.response;
+package com.example.expensesplitter.dto.response.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

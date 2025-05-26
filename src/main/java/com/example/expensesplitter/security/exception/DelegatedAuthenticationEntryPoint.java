@@ -1,4 +1,4 @@
-package com.example.expensesplitter.security;
+package com.example.expensesplitter.security.exception;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

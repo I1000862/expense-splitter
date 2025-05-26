@@ -1,5 +1,6 @@
-package com.example.expensesplitter.security;
+package com.example.expensesplitter.security.configuration;
 
+import com.example.expensesplitter.security.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    
     private final AuthenticationProvider authenticationProvider;
 
     private final AuthenticationEntryPoint authenticationEntryPoint;

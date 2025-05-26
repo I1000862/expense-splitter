@@ -1,6 +1,6 @@
 package com.example.expensesplitter.service;
 
-import com.example.expensesplitter.dto.request.UserRequestDto;
+import com.example.expensesplitter.dto.request.user.UserRequestDto;
 import com.example.expensesplitter.dto.response.user.UserResponseDto;
 
 import java.util.List;

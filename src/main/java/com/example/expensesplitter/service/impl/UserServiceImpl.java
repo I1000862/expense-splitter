@@ -1,6 +1,6 @@
 package com.example.expensesplitter.service.impl;
 
-import com.example.expensesplitter.dto.request.UserRequestDto;
+import com.example.expensesplitter.dto.request.user.UserRequestDto;
 import com.example.expensesplitter.dto.response.user.UserResponseDto;
 import com.example.expensesplitter.entity.User;
 import com.example.expensesplitter.repository.UserRepository;

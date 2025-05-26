@@ -1,8 +1,8 @@
 package com.example.expensesplitter.exception;
 
-import com.example.expensesplitter.dto.response.ErrorResponseDto;
-import com.example.expensesplitter.dto.response.ValidationErrorDetail;
-import com.example.expensesplitter.dto.response.ValidationErrorResponseDto;
+import com.example.expensesplitter.dto.response.error.ErrorResponseDto;
+import com.example.expensesplitter.dto.response.error.ValidationErrorDetail;
+import com.example.expensesplitter.dto.response.error.ValidationErrorResponseDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;

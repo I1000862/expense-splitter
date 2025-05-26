@@ -1,10 +1,13 @@
 package com.example.expensesplitter.controller;
 
-import com.example.expensesplitter.dto.request.UserRequestDto;
-import com.example.expensesplitter.dto.response.SuccessResponseDto;
+import com.example.expensesplitter.dto.request.user.UserRequestDto;
+import com.example.expensesplitter.dto.response.success.SuccessResponseDto;
 import com.example.expensesplitter.dto.response.user.UserResponseDto;
+import com.example.expensesplitter.entity.User;
 import com.example.expensesplitter.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,5 +53,14 @@ public class UserController {
                                                    .message("user updated.")
                                                    .data(user)
                                                    .build());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+
+        return ResponseEntity.ok(user);
     }
 }

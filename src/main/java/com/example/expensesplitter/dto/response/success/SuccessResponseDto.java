@@ -1,4 +1,4 @@
-package com.example.expensesplitter.dto.response;
+package com.example.expensesplitter.dto.response.success;
 
 import lombok.*;
 

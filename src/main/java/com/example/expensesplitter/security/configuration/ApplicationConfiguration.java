@@ -1,4 +1,4 @@
-package com.example.expensesplitter.security;
+package com.example.expensesplitter.security.configuration;
 
 import com.example.expensesplitter.repository.UserRepository;
 import org.springframework.context.annotation.Bean;

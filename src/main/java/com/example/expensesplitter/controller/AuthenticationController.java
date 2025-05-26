@@ -2,11 +2,11 @@ package com.example.expensesplitter.controller;
 
 import com.example.expensesplitter.dto.request.auth.LoginUserDto;
 import com.example.expensesplitter.dto.request.auth.RegisterUserDto;
-import com.example.expensesplitter.dto.response.SuccessResponseDto;
 import com.example.expensesplitter.dto.response.auth.LoginResponseDto;
+import com.example.expensesplitter.dto.response.success.SuccessResponseDto;
 import com.example.expensesplitter.dto.response.user.UserResponseDto;
 import com.example.expensesplitter.entity.User;
-import com.example.expensesplitter.security.JwtService;
+import com.example.expensesplitter.security.jwt.JwtService;
 import com.example.expensesplitter.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.example.expensesplitter.security;
+package com.example.expensesplitter.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

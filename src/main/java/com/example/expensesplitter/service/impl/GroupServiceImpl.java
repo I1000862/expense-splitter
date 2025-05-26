@@ -3,8 +3,8 @@ package com.example.expensesplitter.service.impl;
 import com.example.expensesplitter.dto.request.group.GroupRequestDto;
 import com.example.expensesplitter.dto.response.group.GroupResponseDto;
 import com.example.expensesplitter.entity.Group;
-import com.example.expensesplitter.enums.Currency;
-import com.example.expensesplitter.enums.GroupType;
+import com.example.expensesplitter.enums.group.Currency;
+import com.example.expensesplitter.enums.group.GroupType;
 import com.example.expensesplitter.exception.InvalidIdException;
 import com.example.expensesplitter.exception.ResourceNotFoundException;
 import com.example.expensesplitter.repository.GroupRepository;
@@ -25,14 +25,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupResponseDto getGroupById(String id) {
-    try {
-        UUID groupId = UUID.fromString(id);
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException("No such group found with id: " + id));
-        return convertToDto(group);
-    } catch (IllegalArgumentException e) {
-        throw new InvalidIdException("Invalid id passed.");
-    }
+        try {
+            UUID groupId = UUID.fromString(id);
+            Group group = groupRepository.findById(groupId)
+                                         .orElseThrow(() -> new ResourceNotFoundException(
+                                                 "No such group found with id: " + id));
+            return convertToDto(group);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidIdException("Invalid id passed.");
+        }
     }
 
     @Override
@@ -46,26 +47,26 @@ public class GroupServiceImpl implements GroupService {
 
         String groupType = groupRequestDto.getType();
         Group group = Group.builder()
-                .name(groupRequestDto.getName())
-                .currency(Currency.from(groupRequestDto.getCurrency()))
-                .photoUrl(groupRequestDto.getPhotoUrl())
-                .type( groupType != null ? GroupType.from(groupType) : GroupType.SHARED)
-                .build();
+                           .name(groupRequestDto.getName())
+                           .currency(Currency.from(groupRequestDto.getCurrency()))
+                           .photoUrl(groupRequestDto.getPhotoUrl())
+                           .type(groupType != null ? GroupType.from(groupType) : GroupType.SHARED)
+                           .build();
 
         return convertToDto(groupRepository.save(group));
     }
 
     private GroupResponseDto convertToDto(Group group) {
         return GroupResponseDto.builder()
-                .name(group.getName())
-                .inviteCode(group.getInviteCode())
-                .inviteUrl(group.getInviteUrl())
-                .photoUrl(group.getPhotoUrl())
-                .status(group.getStatus())
-                .currencyCode(group.getCurrency().getCode())
-                .currencySymbol(group.getCurrency().getSymbol())
-                .type(group.getType())
-                .createdAt(group.getCreatedAt())
-                .build();
+                               .name(group.getName())
+                               .inviteCode(group.getInviteCode())
+                               .inviteUrl(group.getInviteUrl())
+                               .photoUrl(group.getPhotoUrl())
+                               .status(group.getStatus())
+                               .currencyCode(group.getCurrency().getCode())
+                               .currencySymbol(group.getCurrency().getSymbol())
+                               .type(group.getType())
+                               .createdAt(group.getCreatedAt())
+                               .build();
     }
 }
