@@ -4,6 +4,8 @@ import com.example.expensesplitter.dto.response.error.ErrorResponseDto;
 import com.example.expensesplitter.dto.response.error.ValidationErrorDetail;
 import com.example.expensesplitter.dto.response.error.ValidationErrorResponseDto;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +74,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<ErrorResponseDto> handleJwtSignatureException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorResponseDto> handleMalformedJwtException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<ErrorResponseDto> handleUnsupportedJwtException(Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                              .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
     }
