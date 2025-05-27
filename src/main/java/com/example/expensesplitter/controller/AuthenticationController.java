@@ -5,8 +5,6 @@ import com.example.expensesplitter.dto.request.auth.RegisterUserDto;
 import com.example.expensesplitter.dto.response.auth.LoginResponseDto;
 import com.example.expensesplitter.dto.response.success.SuccessResponseDto;
 import com.example.expensesplitter.dto.response.user.UserResponseDto;
-import com.example.expensesplitter.entity.User;
-import com.example.expensesplitter.security.jwt.JwtService;
 import com.example.expensesplitter.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    private final JwtService jwtService;
 
-    public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService) {
+    public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
-        this.jwtService = jwtService;
     }
 
     @PostMapping("/register")
@@ -39,17 +35,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<SuccessResponseDto> login(@Valid @RequestBody LoginUserDto loginUserDto) {
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
-
-        String accessToken = jwtService.generateToken(authenticatedUser, false);
-        String refreshToken = jwtService.generateToken(authenticatedUser, true);
-
-        LoginResponseDto loginResponse = LoginResponseDto.builder()
-                                                         .accessToken(accessToken)
-                                                         .refreshToken(refreshToken)
-                                                         .expiresIn(jwtService.getExpirationTime(false))
-                                                         .refreshExpiresIn(jwtService.getExpirationTime(true))
-                                                         .build();
+        LoginResponseDto loginResponse = authenticationService.login(loginUserDto);
 
         return ResponseEntity.ok(SuccessResponseDto.<LoginResponseDto>builder()
                                                    .message("User logged in.")
