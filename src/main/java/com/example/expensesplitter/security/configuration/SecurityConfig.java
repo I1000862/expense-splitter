@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    
+
     private final AuthenticationProvider authenticationProvider;
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -35,7 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(
-                    auth -> auth.requestMatchers("/api/login", "/api/register")
+                    auth -> auth.requestMatchers("/api/login", "/api/register", "/api/refresh")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())

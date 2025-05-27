@@ -1,6 +1,7 @@
 package com.example.expensesplitter.controller;
 
 import com.example.expensesplitter.dto.request.auth.LoginUserDto;
+import com.example.expensesplitter.dto.request.auth.RefreshTokenDto;
 import com.example.expensesplitter.dto.request.auth.RegisterUserDto;
 import com.example.expensesplitter.dto.response.auth.LoginResponseDto;
 import com.example.expensesplitter.dto.response.success.SuccessResponseDto;
@@ -43,5 +44,13 @@ public class AuthenticationController {
                                                    .build());
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<SuccessResponseDto> refresh(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
+        LoginResponseDto loginResponse = authenticationService.refreshToken(refreshTokenDto);
 
+        return ResponseEntity.ok(SuccessResponseDto.<LoginResponseDto>builder()
+                                                   .message("Token refreshed successfully.")
+                                                   .data(loginResponse)
+                                                   .build());
+    }
 }

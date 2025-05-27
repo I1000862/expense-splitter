@@ -1,6 +1,7 @@
 package com.example.expensesplitter.service.impl;
 
 import com.example.expensesplitter.dto.request.auth.LoginUserDto;
+import com.example.expensesplitter.dto.request.auth.RefreshTokenDto;
 import com.example.expensesplitter.dto.request.auth.RegisterUserDto;
 import com.example.expensesplitter.dto.response.auth.LoginResponseDto;
 import com.example.expensesplitter.dto.response.user.UserResponseDto;
@@ -12,8 +13,11 @@ import com.example.expensesplitter.security.jwt.JwtService;
 import com.example.expensesplitter.service.AuthenticationService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -76,5 +80,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                .refreshExpiresIn(jwtService.getExpirationTime(true))
                                .build();
     }
+
+    @Override
+    public LoginResponseDto refreshToken(RefreshTokenDto refreshTokenDto) {
+        String refreshToken = refreshTokenDto.getRefreshToken();
+        String id = jwtService.extractUsername(refreshToken);
+        UUID userId;
+        
+        try {
+            userId = UUID.fromString(id);
+        } catch (IllegalArgumentException ex) {
+            throw new UsernameNotFoundException("Invalid token subject: not a valid UUID.");
+        }
+
+        User user = userRepository.findById(userId)
+                                  .orElseThrow(() -> new UsernameNotFoundException(
+                                          "No such user found for the token."));
+
+        String accessToken = jwtService.generateToken(user, false);
+
+        return LoginResponseDto.builder()
+                               .accessToken(accessToken)
+                               .refreshToken(refreshToken)
+                               .expiresIn(jwtService.getExpirationTime(false))
+                               .refreshExpiresIn(jwtService.getExpirationTime(true))
+                               .build();
+    }
+
 
 }
