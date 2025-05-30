@@ -1,6 +1,6 @@
 package com.example.expensesplitter.controller;
 
-import com.example.expensesplitter.dto.request.group.GroupRequestDto;
+import com.example.expensesplitter.dto.request.group.CreateGroupRequestDto;
 import com.example.expensesplitter.dto.response.group.GroupResponseDto;
 import com.example.expensesplitter.dto.response.success.SuccessResponseDto;
 import com.example.expensesplitter.service.GroupService;
@@ -40,7 +40,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<SuccessResponseDto> createGroup(@Valid @RequestBody GroupRequestDto group) {
+    public ResponseEntity<SuccessResponseDto> createGroup(@Valid @RequestBody CreateGroupRequestDto group) {
         GroupResponseDto createdGroup = groupService.createGroup(group);
 
         return ResponseEntity.ok(SuccessResponseDto.<GroupResponseDto>builder()
