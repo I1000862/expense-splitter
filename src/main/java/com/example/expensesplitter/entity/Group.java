@@ -68,4 +68,9 @@ public class Group {
             status = GroupStatus.ACTIVE;
         }
     }
+
+    public void addMember(GroupMembership member) {
+        members.add(member);
+        member.setGroup(this);
+    }
 }

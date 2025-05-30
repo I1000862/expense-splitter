@@ -20,6 +20,7 @@ public class GroupController {
         this.groupService = groupService;
     }
 
+    // will return only the users groups later
     @GetMapping
     public ResponseEntity<SuccessResponseDto> getGroups() {
         List<GroupResponseDto> groups = groupService.getGroups();

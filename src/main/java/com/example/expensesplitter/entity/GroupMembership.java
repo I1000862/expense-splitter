@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 public class GroupMembership {
     @EmbeddedId
-    private GroupMembershipId id;
+    @Builder.Default
+    private GroupMembershipId id = new GroupMembershipId();
 
     @ManyToOne
     @MapsId("userId")

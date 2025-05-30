@@ -5,7 +5,6 @@ import com.example.expensesplitter.dto.response.group.GroupMemberDto;
 import com.example.expensesplitter.dto.response.group.GroupResponseDto;
 import com.example.expensesplitter.entity.Group;
 import com.example.expensesplitter.entity.GroupMembership;
-import com.example.expensesplitter.entity.GroupMembershipId;
 import com.example.expensesplitter.entity.User;
 import com.example.expensesplitter.enums.group.Currency;
 import com.example.expensesplitter.enums.group.GroupType;
@@ -76,17 +75,13 @@ public class GroupServiceImpl implements GroupService {
 
         Group savedGroup = groupRepository.save(group);
 
-        GroupMembershipId id = new GroupMembershipId(user.getId(), savedGroup.getId());
-
         GroupMembership groupMembership = GroupMembership.builder()
-                                                         .id(id)
-                                                         .group(group)
                                                          .user(user)
                                                          .isOwner(true)
                                                          .joinedAt(LocalDateTime.now())
                                                          .build();
 
-        savedGroup.getMembers().add(groupMembership);
+        savedGroup.addMember(groupMembership);
 
         groupRepository.save(savedGroup);
 
