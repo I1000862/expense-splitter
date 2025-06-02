@@ -7,6 +7,7 @@ import com.example.expensesplitter.entity.Group;
 import com.example.expensesplitter.entity.GroupMembership;
 import com.example.expensesplitter.entity.User;
 import com.example.expensesplitter.enums.group.Currency;
+import com.example.expensesplitter.enums.group.GroupStatus;
 import com.example.expensesplitter.enums.group.GroupType;
 import com.example.expensesplitter.exception.*;
 import com.example.expensesplitter.repository.GroupRepository;
@@ -133,6 +134,29 @@ public class GroupServiceImpl implements GroupService {
 
         group.removeMember(userId);
         groupRepository.save(group);
+    }
+
+    @Override
+    public GroupResponseDto updateStatus(String id, String status) {
+        UUID userId = SecurityUtil.getCurrentUser().getId();
+        UUID groupId = UuidUtil.parse(id, "groupId");
+        GroupStatus newStatus = GroupStatus.from(status);
+
+        Group group = groupRepository.findById(groupId)
+                                     .orElseThrow(() -> new ResourceNotFoundException(
+                                             "Group with the given ID does not exist."));
+
+        if (!group.isOwner(userId)) {
+            throw new NotGroupOwnerException("Only the group owner can update group status.");
+        }
+
+        if (group.getStatus() == newStatus) {
+            throw new RedundantGroupStatusException("The group already has this status: " + newStatus);
+        }
+
+        group.setStatus(newStatus);
+        groupRepository.save(group);
+        return convertToDto(group);
     }
 
     private GroupResponseDto convertToDto(Group group) {

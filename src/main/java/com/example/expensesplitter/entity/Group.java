@@ -86,4 +86,8 @@ public class Group {
     public void removeMember(UUID userId) {
         members.removeIf(m -> m.getUser().getId().equals(userId));
     }
+
+    public boolean isOwner(UUID userId) {
+        return members.stream().anyMatch(m -> m.getUser().getId().equals(userId) && m.getIsOwner());
+    }
 }

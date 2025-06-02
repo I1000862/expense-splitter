@@ -17,4 +17,6 @@ public interface GroupService {
     GroupResponseDto joinGroup(String inviteCode);
 
     void leaveGroup(String groupId);
+
+    GroupResponseDto updateStatus(String groupId, String status);
 }
