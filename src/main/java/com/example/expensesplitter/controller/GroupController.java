@@ -1,6 +1,7 @@
 package com.example.expensesplitter.controller;
 
 import com.example.expensesplitter.dto.request.group.CreateGroupRequestDto;
+import com.example.expensesplitter.dto.request.group.GroupStatusRequestDto;
 import com.example.expensesplitter.dto.response.group.GroupResponseDto;
 import com.example.expensesplitter.dto.response.success.SuccessResponseDto;
 import com.example.expensesplitter.service.GroupService;
@@ -74,6 +75,18 @@ public class GroupController {
         return ResponseEntity.ok(SuccessResponseDto.builder()
                                                    .message("Group left successfully.")
                                                    .data(Map.of("groupId", groupId))
+                                                   .build());
+    }
+
+    @PatchMapping("/{groupId}/status")
+    public ResponseEntity<SuccessResponseDto> updateStatus(@PathVariable String groupId,
+                                                           @Valid @RequestBody GroupStatusRequestDto groupStatusRequestDto
+                                                          ) {
+        GroupResponseDto groupResponseDto = groupService.updateStatus(groupId, groupStatusRequestDto.getStatus());
+
+        return ResponseEntity.ok(SuccessResponseDto.builder()
+                                                   .message("Group status updated successfully.")
+                                                   .data(groupResponseDto)
                                                    .build());
     }
 }
