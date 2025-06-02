@@ -8,6 +8,7 @@ import com.example.expensesplitter.dto.response.success.SuccessResponseDto;
 import com.example.expensesplitter.dto.response.user.UserResponseDto;
 import com.example.expensesplitter.service.AuthenticationService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,10 +29,12 @@ public class AuthenticationController {
     public ResponseEntity<SuccessResponseDto> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
         UserResponseDto registeredUser = authenticationService.register(registerUserDto);
 
-        return ResponseEntity.ok(SuccessResponseDto.<UserResponseDto>builder()
-                                                   .message("User registered successfully.")
-                                                   .data(registeredUser)
-                                                   .build());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(SuccessResponseDto.<UserResponseDto>builder()
+                                        .message("User registered successfully.")
+                                        .data(registeredUser)
+                                        .build());
     }
 
     @PostMapping("/login")
