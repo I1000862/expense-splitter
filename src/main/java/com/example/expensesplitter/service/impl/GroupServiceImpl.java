@@ -8,14 +8,12 @@ import com.example.expensesplitter.entity.GroupMembership;
 import com.example.expensesplitter.entity.User;
 import com.example.expensesplitter.enums.group.Currency;
 import com.example.expensesplitter.enums.group.GroupType;
-import com.example.expensesplitter.exception.AlreadyGroupMemberException;
-import com.example.expensesplitter.exception.InactiveGroupException;
-import com.example.expensesplitter.exception.NotGroupMemberException;
-import com.example.expensesplitter.exception.ResourceNotFoundException;
+import com.example.expensesplitter.exception.*;
 import com.example.expensesplitter.repository.GroupRepository;
 import com.example.expensesplitter.service.GroupService;
 import com.example.expensesplitter.util.InviteCodeUtil;
 import com.example.expensesplitter.util.SecurityUtil;
+import com.example.expensesplitter.util.UuidUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -115,6 +113,26 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.save(group);
 
         return convertToDto(group);
+    }
+
+    @Override
+    public void leaveGroup(String id) {
+        UUID userId = SecurityUtil.getCurrentUser().getId();
+        UUID groupId = UuidUtil.parse(id, "groupId");
+        Group group = groupRepository.findById(groupId)
+                                     .orElseThrow(() -> new ResourceNotFoundException(
+                                             "Group with the given ID does not exist."));
+
+        if (!group.hasMember(userId)) {
+            throw new NotGroupMemberException("Only group members can leave a group.");
+        }
+
+        if (group.isOwner(userId)) {
+            throw new OwnerCannotLeaveGroupException("Owner cannot leave the group. Transfer the ownership first.");
+        }
+
+        group.removeMember(userId);
+        groupRepository.save(group);
     }
 
     private GroupResponseDto convertToDto(Group group) {

@@ -82,4 +82,8 @@ public class Group {
         return members.stream()
                       .anyMatch(m -> m.getUser().getId().equals(userId));
     }
+
+    public void removeMember(UUID userId) {
+        members.removeIf(m -> m.getUser().getId().equals(userId));
+    }
 }

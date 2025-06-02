@@ -15,4 +15,6 @@ public interface GroupService {
     GroupResponseDto createGroup(CreateGroupRequestDto group);
 
     GroupResponseDto joinGroup(String inviteCode);
+
+    void leaveGroup(String groupId);
 }
