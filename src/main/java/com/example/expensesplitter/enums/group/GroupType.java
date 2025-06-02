@@ -9,7 +9,7 @@ public enum GroupType {
 
     @JsonCreator
     public static GroupType from(String value) {
-        return GroupType.valueOf(value);
+        return GroupType.valueOf(value.toUpperCase());
     }
 
     @JsonValue
