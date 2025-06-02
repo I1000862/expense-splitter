@@ -8,7 +8,9 @@ import com.example.expensesplitter.entity.GroupMembership;
 import com.example.expensesplitter.entity.User;
 import com.example.expensesplitter.enums.group.Currency;
 import com.example.expensesplitter.enums.group.GroupType;
-import com.example.expensesplitter.exception.InvalidIdException;
+import com.example.expensesplitter.exception.AlreadyGroupMemberException;
+import com.example.expensesplitter.exception.InactiveGroupException;
+import com.example.expensesplitter.exception.NotGroupMemberException;
 import com.example.expensesplitter.exception.ResourceNotFoundException;
 import com.example.expensesplitter.repository.GroupRepository;
 import com.example.expensesplitter.service.GroupService;
@@ -88,6 +90,33 @@ public class GroupServiceImpl implements GroupService {
         return convertToDto(savedGroup);
     }
 
+    @Override
+    public GroupResponseDto joinGroup(String inviteCode) {
+        User user = SecurityUtil.getCurrentUser();
+
+        Group group = groupRepository.findByInviteCode(inviteCode).orElseThrow(
+                () -> new ResourceNotFoundException("Group with invite code not found"));
+
+        if (group.hasMember(user.getId())) {
+            throw new AlreadyGroupMemberException("User is already a member of this group.");
+        }
+
+        if (!group.isActive()) {
+            throw new InactiveGroupException("Cannot join an inactive group.");
+        }
+
+        GroupMembership membership = GroupMembership.builder()
+                                                    .user(user)
+                                                    .joinedAt(LocalDateTime.now())
+                                                    .build();
+
+        group.addMember(membership);
+
+        groupRepository.save(group);
+
+        return convertToDto(group);
+    }
+
     private GroupResponseDto convertToDto(Group group) {
         List<GroupMemberDto> memberDto = group.getMembers() != null
                                          ? group.getMembers().stream()
@@ -102,6 +131,7 @@ public class GroupServiceImpl implements GroupService {
                                          : List.of();
 
         return GroupResponseDto.builder()
+                               .groupId(group.getId())
                                .name(group.getName())
                                .inviteCode(group.getInviteCode())
                                .inviteUrl(group.getInviteUrl())

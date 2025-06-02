@@ -105,8 +105,21 @@ public class GlobalExceptionHandler {
                              .body(new ErrorResponseDto("NotFound", e.getMessage()));
     }
 
+    @ExceptionHandler(AlreadyGroupMemberException.class)
+    public ResponseEntity<ErrorResponseDto> handleAlreadyGroupMemberException(AlreadyGroupMemberException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                             .body(new ErrorResponseDto("Conflict", e.getMessage()));
+    }
+
+    @ExceptionHandler(InactiveGroupException.class)
+    public ResponseEntity<ErrorResponseDto> handleInactiveGroupException(InactiveGroupException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                             .body(new ErrorResponseDto("InactiveGroup", e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGenericException(Exception e) {
+        log.error(e.getClass().toString());
         log.error(e.toString());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                              .body(new ErrorResponseDto("INTERNAL_SERVER_ERROR", e.getMessage()));

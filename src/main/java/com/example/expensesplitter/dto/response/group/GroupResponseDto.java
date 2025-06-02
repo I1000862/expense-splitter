@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupResponseDto {
+    private UUID groupId;
     private String name;
     private String inviteCode;
     private String inviteUrl;

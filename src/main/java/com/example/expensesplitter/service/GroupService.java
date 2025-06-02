@@ -13,4 +13,6 @@ public interface GroupService {
     List<GroupResponseDto> getGroups();
 
     GroupResponseDto createGroup(CreateGroupRequestDto group);
+
+    GroupResponseDto joinGroup(String inviteCode);
 }
