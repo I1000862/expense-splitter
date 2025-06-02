@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/api/groups")
 @RestController
@@ -64,6 +65,15 @@ public class GroupController {
         return ResponseEntity.ok(SuccessResponseDto.<GroupResponseDto>builder()
                                                    .message("Joined group successfully.")
                                                    .data(group)
+                                                   .build());
+    }
+
+    @PostMapping("/{groupId}/leave")
+    public ResponseEntity<SuccessResponseDto> leaveGroup(@PathVariable String groupId) {
+        groupService.leaveGroup(groupId);
+        return ResponseEntity.ok(SuccessResponseDto.builder()
+                                                   .message("Group left successfully.")
+                                                   .data(Map.of("groupId", groupId))
                                                    .build());
     }
 }
