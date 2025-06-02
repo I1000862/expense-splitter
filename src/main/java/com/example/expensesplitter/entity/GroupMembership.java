@@ -27,7 +27,8 @@ public class GroupMembership {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    private Boolean isOwner;
+    @Builder.Default
+    private Boolean isOwner = false;
 
     @CreationTimestamp
     private LocalDateTime joinedAt;

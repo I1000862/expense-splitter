@@ -73,4 +73,13 @@ public class Group {
         members.add(member);
         member.setGroup(this);
     }
+
+    public boolean isActive() {
+        return GroupStatus.ACTIVE.equals(this.getStatus());
+    }
+
+    public boolean hasMember(UUID userId) {
+        return members.stream()
+                      .anyMatch(m -> m.getUser().getId().equals(userId));
+    }
 }
