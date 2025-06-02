@@ -129,6 +129,16 @@ public class GlobalExceptionHandler {
                                                                   List.of(errorDetail)));
     }
 
+    @ExceptionHandler(NotGroupMemberException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotGroupMemberException(NotGroupMemberException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponseDto("Forbidden", e.getMessage()));
+    }
+
+    @ExceptionHandler(OwnerCannotLeaveGroupException.class)
+    public ResponseEntity<ErrorResponseDto> handleOwnerCannotLeaveGroupException(OwnerCannotLeaveGroupException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponseDto("Forbidden", e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGenericException(Exception e) {
         log.error(e.getClass().toString());
