@@ -1,6 +1,6 @@
 package com.example.expensesplitter.dto.request.group;
 
-import com.example.expensesplitter.enums.Currency;
+import com.example.expensesplitter.enums.group.Currency;
 import com.example.expensesplitter.validation.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

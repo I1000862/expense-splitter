@@ -1,7 +1,7 @@
 package com.example.expensesplitter.dto.response.group;
 
-import com.example.expensesplitter.enums.GroupStatus;
-import com.example.expensesplitter.enums.GroupType;
+import com.example.expensesplitter.enums.group.GroupStatus;
+import com.example.expensesplitter.enums.group.GroupType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
