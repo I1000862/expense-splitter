@@ -37,8 +37,9 @@ public class GroupController {
     @GetMapping("/{groupId}")
     public ResponseEntity<SuccessResponseDto> getGroup(@PathVariable String groupId) {
         GroupResponseDto group = groupService.getGroupById(groupId);
+
         return ResponseEntity.ok(SuccessResponseDto.<GroupResponseDto>builder()
-                                                   .message("Group retrieved successfully.")
+                                                   .message("Group details fetched successfully.")
                                                    .data(group)
                                                    .build());
     }

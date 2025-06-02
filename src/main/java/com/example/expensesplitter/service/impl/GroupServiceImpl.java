@@ -37,15 +37,18 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupResponseDto getGroupById(String id) {
-        try {
-            UUID groupId = UUID.fromString(id);
-            Group group = groupRepository.findById(groupId)
-                                         .orElseThrow(() -> new ResourceNotFoundException(
-                                                 "No such group found with id: " + id));
-            return convertToDto(group);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidIdException("Invalid id passed.");
+        UUID userId = SecurityUtil.getCurrentUser().getId();
+        UUID groupId = UuidUtil.parse(id, "groupId");
+
+        Group group = groupRepository.findById(groupId)
+                                     .orElseThrow(() -> new ResourceNotFoundException(
+                                             "Group with the given ID does not exist."));
+
+        if (!group.hasMember(userId)) {
+            throw new NotGroupMemberException("You do not have permission to view this group.");
         }
+
+        return convertToDto(group);
     }
 
     @Override
