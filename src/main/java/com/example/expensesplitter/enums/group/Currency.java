@@ -1,4 +1,4 @@
-package com.example.expensesplitter.enums;
+package com.example.expensesplitter.enums.group;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -18,18 +18,17 @@ public enum Currency {
         this.symbol = symbol;
     }
 
+    @JsonCreator
+    public static Currency from(String value) {
+        return Currency.valueOf(value.toUpperCase());
+    }
+
     public String getCode() {
         return code;
     }
 
     public String getSymbol() {
         return symbol;
-    }
-
-
-    @JsonCreator
-    public static Currency from(String value) {
-        return Currency.valueOf(value.toUpperCase());
     }
 
     @JsonValue

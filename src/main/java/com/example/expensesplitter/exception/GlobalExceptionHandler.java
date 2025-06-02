@@ -1,56 +1,149 @@
 package com.example.expensesplitter.exception;
 
-import com.example.expensesplitter.dto.response.ErrorResponseDto;
-import com.example.expensesplitter.dto.response.ValidationErrorDetail;
-import com.example.expensesplitter.dto.response.ValidationErrorResponseDto;
+import com.example.expensesplitter.dto.response.error.ErrorResponseDto;
+import com.example.expensesplitter.dto.response.error.ValidationErrorDetail;
+import com.example.expensesplitter.dto.response.error.ValidationErrorResponseDto;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleNotFound(ResourceNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponseDto("NotFound", e.getMessage()));
+                             .body(new ErrorResponseDto("NotFound", e.getMessage()));
     }
 
     @ExceptionHandler(InvalidIdException.class)
     public ResponseEntity<ErrorResponseDto> handleInvalidUuid(InvalidIdException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponseDto("BadRequest", e.getMessage()));
+                             .body(new ErrorResponseDto("BadRequest", e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponseDto> handleValidationException(MethodArgumentNotValidException e) {
-//        System.out.println("e.getMessage" + e.getMessage());
-//        System.out.println("e.getAllErrors" + e.getAllErrors());
-//        System.out.println("e.getBindingResult" + e.getBindingResult());
-//        System.out.println("e.getFieldErrors" + e.getFieldErrors());
-//        System.out.println("e.getFieldError" +e.getFieldError());
-
         List<ValidationErrorDetail> errorDetails = e.getBindingResult().getFieldErrors()
-                .stream()
-                .map(fieldError -> new ValidationErrorDetail(
-                        fieldError.getField(), fieldError.getDefaultMessage()
-                ))
-                .collect(Collectors.toList());
+                                                    .stream()
+                                                    .map(fieldError -> new ValidationErrorDetail(
+                                                            fieldError.getField(), fieldError.getDefaultMessage()
+                                                    ))
+                                                    .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ValidationErrorResponseDto("BadRequest", "Validation failed.", errorDetails));
+                             .body(new ValidationErrorResponseDto("BadRequest", "Validation failed.", errorDetails));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDto> handleRequestBodyMissingException(HttpMessageNotReadableException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(new ErrorResponseDto("BadRequest", "Required request body is missing."));
+    }
+
+    @ExceptionHandler(EmailAlreadyInUseException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgument(EmailAlreadyInUseException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(new ErrorResponseDto("DuplicateEmail", e.getMessage()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponseDto> handleBadCredentials(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("BadCredentials", "Username or password is incorrect."));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponseDto> handleExpiredJwtException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", "Token has expired."));
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponseDto> handleJwtSignatureException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorResponseDto> handleMalformedJwtException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<ErrorResponseDto> handleUnsupportedJwtException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponseDto> handleAuthenticationException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponseDto("Unauthorized", e.getMessage()));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoResourceFoundException(Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .body(new ErrorResponseDto("NotFound", e.getMessage()));
+    }
+
+    @ExceptionHandler(AlreadyGroupMemberException.class)
+    public ResponseEntity<ErrorResponseDto> handleAlreadyGroupMemberException(AlreadyGroupMemberException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                             .body(new ErrorResponseDto("Conflict", e.getMessage()));
+    }
+
+    @ExceptionHandler(InactiveGroupException.class)
+    public ResponseEntity<ErrorResponseDto> handleInactiveGroupException(InactiveGroupException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                             .body(new ErrorResponseDto("InactiveGroup", e.getMessage()));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ValidationErrorResponseDto> handleMissingParam(MissingServletRequestParameterException e) {
+        ValidationErrorDetail errorDetail = new ValidationErrorDetail(e.getParameterName(),
+                                                                      "This parameter is required but was not " +
+                                                                              "provided.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(new ValidationErrorResponseDto("BadRequest",
+                                                                  "Validation failed.",
+                                                                  List.of(errorDetail)));
+    }
+
+    @ExceptionHandler(NotGroupMemberException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotGroupMemberException(NotGroupMemberException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponseDto("Forbidden", e.getMessage()));
+    }
+
+    @ExceptionHandler(OwnerCannotLeaveGroupException.class)
+    public ResponseEntity<ErrorResponseDto> handleOwnerCannotLeaveGroupException(OwnerCannotLeaveGroupException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponseDto("Forbidden", e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGenericException(Exception e) {
+        log.error(e.getClass().toString());
+        log.error(e.toString());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponseDto("INTERNAL_SERVER_ERROR", e.getMessage()));
+                             .body(new ErrorResponseDto("INTERNAL_SERVER_ERROR", e.getMessage()));
     }
 }
