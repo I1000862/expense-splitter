@@ -1,6 +1,7 @@
 package com.example.expensesplitter.dto.request.group;
 
 import com.example.expensesplitter.enums.group.Currency;
+import com.example.expensesplitter.enums.group.GroupType;
 import com.example.expensesplitter.validation.ValidEnum;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -21,5 +22,7 @@ public class CreateGroupRequestDto {
     @ValidEnum(enumClass = Currency.class, message = "Invalid currency value")
     private String currency;
     private String photoUrl;
+
+    @ValidEnum(enumClass = GroupType.class, message = "Group type must be either 'shared' or 'personal'.")
     private String type;
 }
