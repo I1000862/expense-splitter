@@ -1,6 +1,6 @@
 package com.example.expensesplitter.util;
 
-import com.example.expensesplitter.enums.Currency;
+import com.example.expensesplitter.enums.group.Currency;
 
 public class CurrencyFormatter {
     public static String formatAmount(double amount, Currency currency) {
