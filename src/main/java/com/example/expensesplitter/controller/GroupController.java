@@ -24,15 +24,14 @@ public class GroupController {
         this.groupService = groupService;
     }
 
-    // will return only the users groups later
     @GetMapping
     public ResponseEntity<SuccessResponseDto> getGroups() {
         List<GroupResponseDto> groups = groupService.getGroups();
+
         return ResponseEntity.ok(SuccessResponseDto.<List<GroupResponseDto>>builder()
-                                                   .message("Groups retrieved.")
+                                                   .message("User's groups fetched successfully.")
                                                    .data(groups)
-                                                   .build()
-                                );
+                                                   .build());
     }
 
     @GetMapping("/{groupId}")

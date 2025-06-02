@@ -9,7 +9,6 @@ import java.util.List;
 public interface GroupService {
     GroupResponseDto getGroupById(String id);
 
-    //    will update this to only show groups of current user
     List<GroupResponseDto> getGroups();
 
     GroupResponseDto createGroup(CreateGroupRequestDto group);

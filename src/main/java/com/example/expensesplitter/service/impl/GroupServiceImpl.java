@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,8 +50,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupResponseDto> getGroups() {
+        UUID userId = SecurityUtil.getCurrentUser().getId();
+
         List<Group> groups = groupRepository.findAll();
-        return groups.stream().map(this::convertToDto).collect(Collectors.toList());
+
+        List<Group> userGroups = groups.stream().filter(group -> group.hasMember(userId)).toList();
+
+        return userGroups.stream().map(this::convertToDto).toList();
     }
 
     @Override
