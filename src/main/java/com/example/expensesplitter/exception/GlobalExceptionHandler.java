@@ -14,6 +14,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -115,6 +116,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleInactiveGroupException(InactiveGroupException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                              .body(new ErrorResponseDto("InactiveGroup", e.getMessage()));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ValidationErrorResponseDto> handleMissingParam(MissingServletRequestParameterException e) {
+        ValidationErrorDetail errorDetail = new ValidationErrorDetail(e.getParameterName(),
+                                                                      "This parameter is required but was not " +
+                                                                              "provided.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(new ValidationErrorResponseDto("BadRequest",
+                                                                  "Validation failed.",
+                                                                  List.of(errorDetail)));
     }
 
     @ExceptionHandler(Exception.class)

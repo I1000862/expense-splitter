@@ -5,6 +5,8 @@ import com.example.expensesplitter.dto.response.group.GroupResponseDto;
 import com.example.expensesplitter.dto.response.success.SuccessResponseDto;
 import com.example.expensesplitter.service.GroupService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,9 +46,24 @@ public class GroupController {
     public ResponseEntity<SuccessResponseDto> createGroup(@Valid @RequestBody CreateGroupRequestDto group) {
         GroupResponseDto createdGroup = groupService.createGroup(group);
 
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(SuccessResponseDto.<GroupResponseDto>builder()
+                                                     .message("Group created.")
+                                                     .data(createdGroup)
+                                                     .build());
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<SuccessResponseDto> joinGroup(
+            @RequestParam
+            @NotEmpty(message = "Invite code cannot be empty.")
+            String inviteCode
+                                                       ) {
+        GroupResponseDto group = groupService.joinGroup(inviteCode);
+
         return ResponseEntity.ok(SuccessResponseDto.<GroupResponseDto>builder()
-                                                   .message("Group created.")
-                                                   .data(createdGroup)
+                                                   .message("Joined group successfully.")
+                                                   .data(group)
                                                    .build());
     }
 }
