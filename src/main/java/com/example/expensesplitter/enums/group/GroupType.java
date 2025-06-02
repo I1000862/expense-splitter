@@ -1,19 +1,20 @@
-package com.example.expensesplitter.enums;
+package com.example.expensesplitter.enums.group;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum GroupStatus {
-    ACTIVE,
-    INACTIVE;
+public enum GroupType {
+    SHARED,
+    PERSONAL;
 
     @JsonCreator
-    public static GroupStatus from(String value) {
-        return GroupStatus.valueOf(value);
+    public static GroupType from(String value) {
+        return GroupType.valueOf(value);
     }
 
     @JsonValue
     public String toValue() {
         return this.name();
     }
+
 }

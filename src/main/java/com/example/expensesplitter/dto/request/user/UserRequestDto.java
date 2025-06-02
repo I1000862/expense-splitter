@@ -1,4 +1,4 @@
-package com.example.expensesplitter.dto.request;
+package com.example.expensesplitter.dto.request.user;
 
 import lombok.Builder;
 import lombok.Data;
