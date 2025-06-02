@@ -139,6 +139,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponseDto("Forbidden", e.getMessage()));
     }
 
+    @ExceptionHandler(RedundantGroupStatusException.class)
+    public ResponseEntity<ErrorResponseDto> handleRedundantGroupStatusException(RedundantGroupStatusException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                             .body(new ErrorResponseDto("RedundantStatusUpdate", e.getMessage()));
+    }
+
+    @ExceptionHandler(NotGroupOwnerException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotGroupOwnerException(NotGroupOwnerException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponseDto("Forbidden", e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGenericException(Exception e) {
         log.error(e.getClass().toString());
